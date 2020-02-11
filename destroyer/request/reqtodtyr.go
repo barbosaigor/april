@@ -12,7 +12,7 @@ type nodesResJson struct {
 	Nodes []string `json:"nodes"`
 }
 
-// ReqToDestroy requests the destroy server to shut down nodes
+// ReqToDestroy requests the chaos server to shut down nodes
 func ReqToDestroy(host string, nodes []string) error {
 	reqBody, err := json.Marshal(nodesResJson{nodes})
 	if err != nil {
@@ -30,7 +30,7 @@ func ReqToDestroy(host string, nodes []string) error {
 	if resp.StatusCode == 500 {
 		return errors.New("Fail to destroy nodes")
 	} else if resp.StatusCode >= 400 {
-		return errors.New("Fail to communicate with destroy server")
+		return errors.New("Fail to communicate with chaos server")
 	}
 
 	return nil

@@ -100,7 +100,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	err = request.ReqToDestroy(c.DestroyerHost, nodes)
 	if err != nil {
 		log.Println(err.Error())
-		http.Error(w, "There was a problem with destroy server", http.StatusInternalServerError)
+		http.Error(w, "There was a problem with chaos server", http.StatusInternalServerError)
 		return	
 	}
 

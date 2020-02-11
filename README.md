@@ -18,8 +18,18 @@ april bare -f conf.yml -n 10
 ```  
 
 *Server* will listen on port 8080. Default port is 7070.  
-Need an 'destroy server' running to destroy instances.   
+Need an 'chaos server' running to destroy instances.   
 ```bash 
 april server -p 8080  
-```  
+``` 
 
+## Design approach 
+The Aprils design is divided into two parts: CLI and Chaos server. CLI runs the algorithm and request to Chaos server for terminate instances. 
+Therefore, we gain flexibility about technologies that manage instances, a Chaos server could terminate Docker containers, Kubernetes instances etc.  
+
+![Aprils design](./res/aprils-diagram-1.png)  
+
+## What is a Chaos server
+Chaos server hosts an API that terminantes instances. Aprils CLI runs its algorithm and asks the Chaos server to finish 
+the selected instances. The API implementation lives in april/destroyer package, so chaos servers must include that package and
+implement the Destroyer interface, which contain the business logic for terminate instances. 
