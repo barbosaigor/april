@@ -13,7 +13,7 @@ type Destroyer interface {
 	Destroy(nodes []string) error
 }
 
-type Server struct {
+type server struct {
 	Port int
 	Destyer Destroyer
 	
@@ -28,6 +28,10 @@ type responseMessage struct {
 	Message string `json:"message"`
 }
 
+func New(port int, destyer Destroyer) *server {
+	return &server{port, destyer, nil}
+}
+
 // mwSetJsonHeader sets the http header to support json responses
 func mwSetJsonHeader(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +43,7 @@ func mwSetJsonHeader(next http.Handler) http.Handler {
 // shutDownHandler shut down instances
 // body:
 //		nodes: nodes to shut down
-func (s *Server) shutDownHandler() http.HandlerFunc {
+func (s *server) shutDownHandler() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
@@ -78,7 +82,7 @@ func (s *Server) shutDownHandler() http.HandlerFunc {
 }
 
 // Serve hosts aprils API over HTTP protocol
-func (s *Server) Serve() {
+func (s *server) Serve() {
 	s.serveMux = http.NewServeMux()
 	s.serveMux.Handle("/stop", mwSetJsonHeader(s.shutDownHandler()))
 	fmt.Println("(HTTP) Listening on port: ", s.Port)
