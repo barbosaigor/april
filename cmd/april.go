@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"gitlab.com/barbosaigor/april/cli"
+	"github.com/barbosaigor/april/cli"
 )
 
 func main() {

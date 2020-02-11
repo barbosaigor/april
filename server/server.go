@@ -8,8 +8,8 @@ import (
 	"io/ioutil"
 	"encoding/json"
 
-	"gitlab.com/barbosaigor/april"
-	"gitlab.com/barbosaigor/april/destroyer/request"
+	"github.com/barbosaigor/april"
+	"github.com/barbosaigor/april/destroyer/request"
 )
 
 const defaultDestroyerHost = "localhost:7071"

@@ -1,4 +1,4 @@
-module gitlab.com/barbosaigor/april
+module github.com/barbosaigor/april
 
 go 1.13
 

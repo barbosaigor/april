@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/barbosaigor/april"
-	"gitlab.com/barbosaigor/april/destroyer/request"
+	"github.com/barbosaigor/april"
+	"github.com/barbosaigor/april/destroyer/request"
 )
 
 const VERSION = "a1.0.0"

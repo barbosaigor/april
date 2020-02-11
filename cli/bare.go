@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/barbosaigor/april"
+	"github.com/barbosaigor/april"
 )
 
 var filepath string

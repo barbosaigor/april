@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"gitlab.com/barbosaigor/april/server"
+	"github.com/barbosaigor/april/server"
 	"github.com/spf13/cobra"
 )
 
