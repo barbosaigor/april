@@ -1,12 +1,12 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
-	"io/ioutil"
-	"encoding/json"
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/destroyer/request"
@@ -15,7 +15,7 @@ import (
 const defaultDestroyerHost = "localhost:7071"
 
 type confResJson struct {
-	Conf string `json:"conf"`
+	Conf          string `json:"conf"`
 	DestroyerHost string `json:"destroyerHost"`
 }
 
@@ -23,7 +23,7 @@ type nodesResJson struct {
 	Nodes []string `json:"nodes"`
 }
 
-// bareHandler executes only the node selecting algorithm 
+// bareHandler executes only the node selecting algorithm
 // query:
 //		n is the number of returning nodes
 // body:
@@ -38,13 +38,13 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println(err.Error())
-        http.Error(w, "Fail to read request body", http.StatusInternalServerError)
-        return
-    }
+		http.Error(w, "Fail to read request body", http.StatusInternalServerError)
+		return
+	}
 
-    var c confResJson
-    json.Unmarshal(data, &c)
-    if c.Conf == "" {
+	var c confResJson
+	json.Unmarshal(data, &c)
+	if c.Conf == "" {
 		http.Error(w, "Empty conf file", http.StatusInternalServerError)
 		return
 	}
@@ -76,32 +76,32 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-        http.Error(w, "Fail to read request body", http.StatusInternalServerError)
-        return
-    }
+		http.Error(w, "Fail to read request body", http.StatusInternalServerError)
+		return
+	}
 
-    var c confResJson
-    json.Unmarshal(data, &c)
-    if c.Conf == "" {
+	var c confResJson
+	json.Unmarshal(data, &c)
+	if c.Conf == "" {
 		http.Error(w, "Empty conf or destroyerHost", http.StatusInternalServerError)
 		return
 	}
 	if c.DestroyerHost == "" {
 		c.DestroyerHost = defaultDestroyerHost
 	}
-	
+
 	nodes, err := april.PickRandDeps([]byte(c.Conf), uint32(n))
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "Fail to pick nodes", http.StatusInternalServerError)
 		return
 	}
-	
+
 	err = request.ReqToDestroy(c.DestroyerHost, nodes)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "There was a problem with chaos server", http.StatusInternalServerError)
-		return	
+		return
 	}
 
 	nRes, _ := json.Marshal(nodesResJson{nodes})

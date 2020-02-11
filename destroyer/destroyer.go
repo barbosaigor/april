@@ -1,11 +1,11 @@
 package destroyer
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"io/ioutil"
-	"encoding/json"
 )
 
 type Destroyer interface {
@@ -14,9 +14,9 @@ type Destroyer interface {
 }
 
 type server struct {
-	Port int
+	Port    int
 	Destyer Destroyer
-	
+
 	serveMux *http.ServeMux
 }
 

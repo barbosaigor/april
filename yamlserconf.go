@@ -7,7 +7,7 @@ import (
 )
 
 type service map[string]struct {
-	Weight uint32 `yaml:"weight"`
+	Weight       uint32   `yaml:"weight"`
 	Dependencies []string `yaml:"dependencies"`
 }
 

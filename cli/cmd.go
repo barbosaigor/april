@@ -3,12 +3,13 @@ package cli
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/destroyer/request"
+	"github.com/spf13/cobra"
 )
 
 const VERSION = "a1.0.0"
+
 var host string
 
 func init() {
@@ -21,7 +22,7 @@ func init() {
 var rootCmd = &cobra.Command{
 	Use:   "april",
 	Short: "April is a chaos testing tool",
-	Long: "A fast and flexible tool for chaos testing.",
+	Long:  "A fast and flexible tool for chaos testing.",
 	Run: func(cmd *cobra.Command, args []string) {
 		nodes, err := april.PickRandDepsYml(filepath, number)
 		if err != nil {
@@ -31,7 +32,7 @@ var rootCmd = &cobra.Command{
 		err = request.ReqToDestroy(host, nodes)
 		if err != nil {
 			fmt.Println(err.Error())
-			return	
+			return
 		}
 		fmt.Println("Nodes destroyed: ", nodes)
 	},

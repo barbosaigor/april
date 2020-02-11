@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"github.com/barbosaigor/april"
+	"github.com/spf13/cobra"
 )
 
 var filepath string

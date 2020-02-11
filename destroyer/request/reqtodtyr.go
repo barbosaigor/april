@@ -1,11 +1,11 @@
 package request
 
 import (
-	"encoding/json"
-	"net/http"
 	"bytes"
-	"fmt"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
 )
 
 type nodesResJson struct {
