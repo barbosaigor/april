@@ -12,9 +12,9 @@ Chaos test.
 Need a running 'chaos server' to terminate instances.  
 -f configuraion file path (Default is conf.yml)  
 -n number of nodes to choose  
--c chaos server endpoint (Default is localhost:7071)
--u username for chaos server auth
--s password for chaos server auth 
+-c chaos server endpoint (Default is localhost:7071)  
+-u username for chaos server auth  
+-s password for chaos server auth  
 ```bash 
 april -f conf.yml -n 10 -u bob -s mysecret
 ```  
