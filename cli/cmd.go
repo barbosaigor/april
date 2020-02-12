@@ -8,14 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const VERSION = "a1.0.0"
+const VERSION = "0.1.0"
 
 var host string
 
 func init() {
 	rootCmd.Flags().StringVarP(&filepath, "file", "f", "conf.yml", "Configuration file")
 	rootCmd.Flags().Uint32VarP(&number, "number", "n", 0, "Number of nodes to return")
-	rootCmd.Flags().StringVarP(&host, "host", "u", "localhost:7071", "Chaos server url")
+	rootCmd.Flags().StringVarP(&host, "chaos", "c", "localhost:7071", "Chaos server url")
 	rootCmd.MarkFlagRequired("number")
 }
 
