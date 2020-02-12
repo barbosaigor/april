@@ -7,9 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var filepath string
-var number uint32
-
 func init() {
 	bareCmd.Flags().StringVarP(&filepath, "file", "f", "conf.yml", "Configuration file")
 	bareCmd.Flags().Uint32VarP(&number, "number", "n", 0, "Number of nodes to return")

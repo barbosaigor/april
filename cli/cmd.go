@@ -10,7 +10,10 @@ import (
 
 const VERSION = "0.1.0"
 
+var filepath string
+var number uint32
 var host string
+var port int
 
 func init() {
 	rootCmd.Flags().StringVarP(&filepath, "file", "f", "conf.yml", "Configuration file")

@@ -12,15 +12,18 @@ import (
 	"github.com/barbosaigor/april/destroyer/request"
 )
 
-const defaultDestroyerHost = "localhost:7071"
+var destroyerHost = "localhost:7071"
 
 type confResJson struct {
-	Conf          string `json:"conf"`
-	DestroyerHost string `json:"destroyerHost"`
+	Conf string `json:"conf"`
 }
 
 type nodesResJson struct {
 	Nodes []string `json:"nodes"`
+}
+
+func SetDestroyerHost(h string) {
+	destroyerHost = h
 }
 
 // bareHandler executes only the node selecting algorithm
@@ -66,7 +69,6 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 //		n is the number of returning nodes
 // body:
 //		conf is the configuration file (yaml file)
-//		destroyerHost is the endpoint of destroyer server
 func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	n, err := strconv.ParseUint(r.FormValue("n"), 10, 32)
 	if err != nil {
@@ -86,9 +88,6 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Empty conf or destroyerHost", http.StatusInternalServerError)
 		return
 	}
-	if c.DestroyerHost == "" {
-		c.DestroyerHost = defaultDestroyerHost
-	}
 
 	nodes, err := april.PickRandDeps([]byte(c.Conf), uint32(n))
 	if err != nil {
@@ -97,7 +96,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = request.ReqToDestroy(c.DestroyerHost, nodes)
+	err = request.ReqToDestroy(destroyerHost, nodes)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "There was a problem with chaos server", http.StatusInternalServerError)
