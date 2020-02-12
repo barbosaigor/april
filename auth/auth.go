@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"fmt"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 )
 
 type Credentials struct {

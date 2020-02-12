@@ -16,9 +16,9 @@ type Destroyer interface {
 }
 
 type server struct {
-	Cred *auth.Credentials
-	port int
-	destyer Destroyer
+	Cred     *auth.Credentials
+	port     int
+	destyer  Destroyer
 	serveMux *http.ServeMux
 }
 

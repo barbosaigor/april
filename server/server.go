@@ -16,7 +16,7 @@ import (
 var destroyerHost = "localhost:7071"
 
 type confResJson struct {
-	Conf string `json:"conf"`
+	Conf     string `json:"conf"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -72,7 +72,7 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 //		n is the number of returning nodes
 // body:
 //		conf is the configuration file (yaml file)
-//		username for auth 
+//		username for auth
 //		password for auth
 func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	n, err := strconv.ParseUint(r.FormValue("n"), 10, 32)
