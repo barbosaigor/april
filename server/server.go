@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/barbosaigor/april"
+	"github.com/barbosaigor/april/auth"
 	"github.com/barbosaigor/april/destroyer/request"
 )
 
@@ -16,6 +17,8 @@ var destroyerHost = "localhost:7071"
 
 type confResJson struct {
 	Conf string `json:"conf"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type nodesResJson struct {
@@ -69,6 +72,8 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 //		n is the number of returning nodes
 // body:
 //		conf is the configuration file (yaml file)
+//		username for auth 
+//		password for auth
 func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	n, err := strconv.ParseUint(r.FormValue("n"), 10, 32)
 	if err != nil {
@@ -96,8 +101,12 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = request.ReqToDestroy(destroyerHost, nodes)
-	if err != nil {
+	token := auth.EncryptUser(c.Username, c.Password)
+	err = request.ReqToDestroy(destroyerHost, nodes, token)
+	if err == request.ErrUnauthorized {
+		http.Error(w, "Unauthorized user", http.StatusUnauthorized)
+		return
+	} else if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "There was a problem with chaos server", http.StatusInternalServerError)
 		return

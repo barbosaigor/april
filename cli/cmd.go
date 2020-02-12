@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/barbosaigor/april"
+	"github.com/barbosaigor/april/auth"
 	"github.com/barbosaigor/april/destroyer/request"
 	"github.com/spf13/cobra"
 )
@@ -14,12 +15,18 @@ var filepath string
 var number uint32
 var host string
 var port int
+var username string
+var password string
 
 func init() {
 	rootCmd.Flags().StringVarP(&filepath, "file", "f", "conf.yml", "Configuration file")
 	rootCmd.Flags().Uint32VarP(&number, "number", "n", 0, "Number of nodes to return")
 	rootCmd.Flags().StringVarP(&host, "chaos", "c", "localhost:7071", "Chaos server url")
+	rootCmd.Flags().StringVarP(&username, "username", "u", "", "Username")
+	rootCmd.Flags().StringVarP(&password, "password", "s", "", "Password")
 	rootCmd.MarkFlagRequired("number")
+	rootCmd.MarkFlagRequired("username")
+	rootCmd.MarkFlagRequired("password")
 }
 
 var rootCmd = &cobra.Command{
@@ -32,7 +39,8 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
-		err = request.ReqToDestroy(host, nodes)
+		token := auth.EncryptUser(username, password)
+		err = request.ReqToDestroy(host, nodes, token)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
