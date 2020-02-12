@@ -9,14 +9,15 @@ import (
 )
 
 func someRoute(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hey there"))
 }
 
 func main() {
 	ath := auth.New("my secret")
 	ath.Register("bob", "123")
+	fmt.Println("Token: ", auth.EncryptUser("bob", "123"))
 	serveMux := http.NewServeMux()
-	serveMux.Handle("/signin", ath.MwGenerateToken(http.HandlerFunc(someRoute)))
 	serveMux.Handle("/", ath.MwAuth(http.HandlerFunc(someRoute)))
-	fmt.Println("(HTTP) Listening")
+	fmt.Println("(HTTP) Listening on port 8081")
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", 8081), serveMux))
 }

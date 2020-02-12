@@ -1,31 +1,38 @@
 package auth
 
 import (
-	_ "github.com/dgrijalva/jwt-go"
+	"fmt"
+	"crypto/sha256"
+	"encoding/hex"
 )
 
 type credentials struct {
-	// login contain authorised users.
-	// Username as key and password as value
-	login map[string]string
-	key []byte
+	// whitelist contain authorized users.
+	whitelist map[string]struct{}
 }
 
 func New(key string) *credentials {
-	c := &credentials{}
-	c.login = make(map[string]string, 1)
-	c.key = []byte(key)
-	return c
+	c := credentials{}
+	c.whitelist = make(map[string]struct{}, 1)
+	return &c
+}
+
+// EncryptUser takes credentials and convert to SHA256 string
+func EncryptUser(username, password string) string {
+	key := fmt.Sprintf("%v.%v", username, password)
+	tmp := sha256.Sum256([]byte(key))
+	eKey := tmp[:]
+	return hex.EncodeToString(eKey)
 }
 
 // Register add user to an authorised user list
 func (c *credentials) Register(username, password string) {
-	c.login[username] = password
+	user := EncryptUser(username, password)
+	c.whitelist[user] = struct{}{}
 }
 
 // IsAuthorised verify if its a valid credential
-func (c *credentials) IsAuthorised(username, password string) bool {
-	pwd, ok := c.login[username]
-	return ok && password == pwd
+func (c *credentials) isAuthorised(token string) bool {
+	_, ok := c.whitelist[token]
+	return ok
 }
-
