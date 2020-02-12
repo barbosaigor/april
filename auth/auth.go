@@ -6,13 +6,13 @@ import (
 	"encoding/hex"
 )
 
-type credentials struct {
+type Credentials struct {
 	// whitelist contain authorized users.
 	whitelist map[string]struct{}
 }
 
-func New(key string) *credentials {
-	c := credentials{}
+func New() *Credentials {
+	c := Credentials{}
 	c.whitelist = make(map[string]struct{}, 1)
 	return &c
 }
@@ -26,13 +26,13 @@ func EncryptUser(username, password string) string {
 }
 
 // Register add user to an authorised user list
-func (c *credentials) Register(username, password string) {
+func (c *Credentials) Register(username, password string) {
 	user := EncryptUser(username, password)
 	c.whitelist[user] = struct{}{}
 }
 
 // IsAuthorised verify if its a valid credential
-func (c *credentials) isAuthorised(token string) bool {
+func (c *Credentials) isAuthorised(token string) bool {
 	_, ok := c.whitelist[token]
 	return ok
 }

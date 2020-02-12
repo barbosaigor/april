@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/barbosaigor/april/auth"
 )
 
 type Destroyer interface {
@@ -14,9 +16,9 @@ type Destroyer interface {
 }
 
 type server struct {
-	Port    int
-	Destyer Destroyer
-
+	Cred *auth.Credentials
+	port int
+	destyer Destroyer
 	serveMux *http.ServeMux
 }
 
@@ -29,15 +31,7 @@ type responseMessage struct {
 }
 
 func New(port int, destyer Destroyer) *server {
-	return &server{port, destyer, nil}
-}
-
-// mwSetJsonHeader sets the http header to support json responses
-func mwSetJsonHeader(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		next.ServeHTTP(w, r)
-	})
+	return &server{auth.New(), port, destyer, nil}
 }
 
 // shutDownHandler shut down instances
@@ -45,6 +39,7 @@ func mwSetJsonHeader(next http.Handler) http.Handler {
 //		nodes: nodes to shut down
 func (s *server) shutDownHandler() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case "POST":
 			data, err := ioutil.ReadAll(r.Body)
@@ -66,7 +61,7 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 				return
 			}
 
-			err = s.Destyer.Destroy(njson.Nodes)
+			err = s.destyer.Destroy(njson.Nodes)
 			if err != nil {
 				resMsg := responseMessage{"One container had a problem"}
 				res, _ := json.Marshal(resMsg)
@@ -84,7 +79,7 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 // Serve hosts aprils API over HTTP protocol
 func (s *server) Serve() {
 	s.serveMux = http.NewServeMux()
-	s.serveMux.Handle("/stop", mwSetJsonHeader(s.shutDownHandler()))
-	fmt.Println("(HTTP) Listening on port: ", s.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", s.Port), s.serveMux))
+	s.serveMux.Handle("/shutdown", s.Cred.MwAuth(s.shutDownHandler()))
+	fmt.Println("(HTTP) Listening on port: ", s.port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", s.port), s.serveMux))
 }

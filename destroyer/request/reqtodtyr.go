@@ -20,7 +20,7 @@ func ReqToDestroy(host string, nodes []string) error {
 	}
 
 	// Make a request
-	resp, err := http.Post(fmt.Sprintf("http://%v/stop", host),
+	resp, err := http.Post(fmt.Sprintf("http://%v/shutdown", host),
 		"application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
 		return err

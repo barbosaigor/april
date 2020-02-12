@@ -5,7 +5,7 @@ import (
 )
 
 // MwAuth is a middleware for user authentication
-func (c *credentials) MwAuth(next http.Handler) http.Handler {
+func (c *Credentials) MwAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ck, err := r.Cookie("token")
 		if err != nil {

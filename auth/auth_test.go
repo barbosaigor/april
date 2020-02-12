@@ -5,7 +5,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	c := New("my secret")
+	c := New()
 	if c == nil {
 		t.Error("New: have not created object")
 	}
@@ -15,7 +15,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestRegister(t *testing.T) {
-	c := New("my secret")
+	c := New()
 	c.Register("bob", "password123")
 	c.Register("garry", "password321")
 	c.Register("alice", "password213")
