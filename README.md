@@ -8,8 +8,9 @@ such as 'server' which hosts an API for remote access to the chaos test.
 
 ## Tools
 Chaos test.  
--f configuraion file path  
+-f configuraion file path (Default is conf.yml)  
 -n number of nodes to choose  
+-c chaos server endpoint (Default is localhost:7071)  
 ```bash 
 april -f conf.yml -n 10
 ```  
