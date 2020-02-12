@@ -5,6 +5,7 @@ does chaos testing by randomly shutting down nodes, taking into account
 their importance.  
 April is a CLI tool, being possible to either run chaos testing or others tools,
 such as 'server' which hosts an API for remote access to the chaos test.
+The selection algorithm firstly picks K nodes, then it picks N dependencies on those nodes. Heavy nodes are more likely to be picked.  
 
 ## Tools
 Chaos test. 
