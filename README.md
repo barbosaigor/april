@@ -1,4 +1,5 @@
 # April
+**April is under construction**  
 
 April proposes improve resilience in microservices architectures. It
 does chaos testing by randomly shutting down nodes, taking into account 
@@ -33,9 +34,17 @@ Need a running 'chaos server' to terminate instances.
 ```bash 
 april server -p 8080  // will listen on port 8080
 ``` 
+## Configuration file template
+```yaml
+services:
+    servicename:
+        weight: Any integer
+        dependencies:
+            - list of services
+```  
 
-## Configuration file example  
-conf.yml
+### Configuration file example  
+> conf.yml
 ```yaml
 services:
     payment:
@@ -76,5 +85,5 @@ the selected instances. The API implementation lives in april/destroyer package,
 implement the Destroyer interface, which contain the business logic for terminate instances. 
 
 ## Chaos Servers
-A [Docker](https://github.com/barbosaigor/aprilcsdocker) implementation  
-
+Docker chaos server stop containers [dockercs](https://github.com/barbosaigor/aprilcsdocker).  
+Kubenetes chaos server terminate pods [kubernetescs](https://github.com/barbosaigor/aprilcsdocker), in future it may terminate deployments and services.  
