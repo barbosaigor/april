@@ -85,5 +85,5 @@ the selected instances. The API implementation lives in april/destroyer package,
 implement the Destroyer interface, which contain the business logic for terminate instances. 
 
 ## Chaos Servers
-Docker chaos server stop containers [dockercs](https://github.com/barbosaigor/aprilcsdocker).  
-Kubenetes chaos server terminate pods [kubernetescs](https://github.com/barbosaigor/aprilcsdocker), in future it may terminate deployments and services.  
+Docker chaos server stop containers [dockercs](https://github.com/barbosaigor/dockercs).  
+Kubenetes chaos server terminate pods [kubernetescs](https://github.com/barbosaigor/kubernetescs), in future it may terminate deployments and services.  
