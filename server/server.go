@@ -104,7 +104,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	token := auth.EncryptUser(c.Username, c.Password)
 	err = request.ReqToDestroy(destroyerHost, nodes, token)
 	if err == request.ErrUnauthorized {
-		http.Error(w, "Unauthorized user", http.StatusUnauthorized)
+		http.Error(w, "Invalid user", http.StatusForbidden)
 		return
 	} else if err != nil {
 		log.Println(err.Error())
