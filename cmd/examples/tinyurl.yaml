@@ -1,0 +1,33 @@
+version: 1
+
+services:
+  url:
+    weight: 90
+    dependencies:
+      - key-chain
+      - url-db
+
+  url-db:
+    weight: 60
+  
+  redirect:
+    weight: 95
+    dependencies:
+      - url
+  
+  cleanup:
+    weight: 10
+    dependencies:
+      - url
+  
+  key-chain:
+    weight: 50
+    dependencies:
+      - key-generator
+      - key-chain-db
+  
+  key-chain-db:
+    weight: 45
+  
+  key-generator:
+    weight: 25
