@@ -1,25 +1,30 @@
 services:
-    payment:
-        weight: 10
-        dependencies:
-            - "profile"
-            - "fees"
-    fees:
-        weight: 5
-    profile:
-        weight: 20
-    inventory:
-        weight: 15
-    shipping:
-        weight: 5
-        dependencies:
-            - "inventory"
-            - "profile"
-    storefront:
-        weight: 20
-        dependencies:
-            - "shipping"
-            - "inventory"
-            - "profile"
-            - "payment"
-            - "fees"
+  payment:
+    weight: 10
+    dependencies:
+      - profile
+      - fees
+
+  fees:
+    weight: 5
+
+  profile:
+    weight: 20
+
+  inventory:
+    weight: 15
+
+  shipping:
+    weight: 5
+    dependencies:
+      - inventory
+      - profile
+
+  storefront:
+    weight: 20
+    dependencies:
+      - shipping
+      - inventory
+      - profile
+      - payment
+      - fees
