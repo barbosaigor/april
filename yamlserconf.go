@@ -9,10 +9,12 @@ import (
 type service map[string]struct {
 	Weight       uint32   `yaml:"weight"`
 	Dependencies []string `yaml:"dependencies"`
+	Selector     string   `yaml:"selector"`
 }
 
-type services struct {
-	ServicesData service `yaml:"services"`
+type confData struct {
+	Version  int32   `yaml:"version"`
+	Services service `yaml:"services"`
 }
 
 func readFile(filename string) ([]byte, error) {
@@ -29,24 +31,10 @@ func readFile(filename string) ([]byte, error) {
 
 // getConf reads bytes and convert to an service
 // data structure
-func getConf(conf []byte) (*services, error) {
-	var servs services
+func getConf(conf []byte) (*confData, error) {
+	var servs confData
 	if err := yaml.Unmarshal(conf, &servs); err != nil {
 		return nil, err
 	}
 	return &servs, nil
-}
-
-// getConfFile read a yaml file from system and
-// convert to a service configuration data structure
-func getConfFile(filename string) (*services, error) {
-	fdata, err := readFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	servs, err := getConf(fdata)
-	if err != nil {
-		return nil, err
-	}
-	return servs, nil
 }
