@@ -21,17 +21,17 @@ type confResJson struct {
 	Password string `json:"password"`
 }
 
-type nodesResJson struct {
-	Nodes []string `json:"nodes"`
+type resJson struct {
+	Services []string `json:"services"`
 }
 
 func SetDestroyerHost(h string) {
 	destroyerHost = h
 }
 
-// bareHandler executes only the node selecting algorithm
+// bareHandler executes only the service selecting algorithm
 // query:
-//		n is the number of returning nodes
+//		n is the number of returning services
 // body:
 //		conf is the configuration file (yaml file)
 func bareHandler(w http.ResponseWriter, r *http.Request) {
@@ -55,21 +55,21 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nodes, err := april.PickRandDeps([]byte(c.Conf), uint32(n))
+	svs, err := april.PickRandDeps([]byte(c.Conf), uint32(n))
 	if err != nil {
 		log.Println(err.Error())
-		http.Error(w, "Fail to pick nodes", http.StatusInternalServerError)
+		http.Error(w, "Fail to pick services", http.StatusInternalServerError)
 		return
 	}
 
-	nRes, _ := json.Marshal(nodesResJson{nodes})
+	nRes, _ := json.Marshal(resJson{svs})
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(nRes)
 }
 
 // chaosHandler apply chaos testing
 // query:
-//		n is the number of returning nodes
+//		n is the number of returning services
 // body:
 //		conf is the configuration file (yaml file)
 //		username for auth
@@ -98,16 +98,16 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	nodes, err := april.PickRandDepsConf(conf, uint32(n))
+	services, err := april.PickRandDepsConf(conf, uint32(n))
 	if err != nil {
 		log.Println(err.Error())
-		http.Error(w, "Fail to pick nodes", http.StatusInternalServerError)
+		http.Error(w, "Fail to pick services", http.StatusInternalServerError)
 		return
 	}
 
 	token := auth.EncryptUser(c.Username, c.Password)
-	svs := make([]april.Service, len(nodes))
-	for i, s := range nodes {
+	svs := make([]april.Service, len(services))
+	for i, s := range services {
 		svs[i].Name = s
 		svs[i].Selector = conf.Services[s].Selector;
 	}
@@ -120,8 +120,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "There was a problem with chaos server", http.StatusInternalServerError)
 		return
 	}
-
-	nRes, _ := json.Marshal(nodesResJson{nodes})
+	nRes, _ := json.Marshal(resJson{services})
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(nRes)
 }

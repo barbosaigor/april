@@ -20,7 +20,14 @@ type Destroyer struct {
 func (d *Destroyer) FilterSvcs(instances []Instance, svcs []april.Service) (s []april.Service) {
 	for _, instance := range instances {
 		for _, svc := range svcs {
-			if selector.Match(instance.Name, svc.Name, selector.Selector[svc.Selector]) {
+			if instance.Name != svc.Name {
+				continue
+			}
+			sel, ok := selector.Selector[svc.Selector]
+			if !ok {
+				sel = selector.All
+			}
+			if selector.Match(instance.Name, svc.Name, sel) {
 				s = append(s, svc)
 			}
 		}
@@ -36,8 +43,7 @@ func (d *Destroyer) Shutdown(svcs []april.Service) error {
 	}
 	svcs = d.FilterSvcs(instances, svcs)
 	for _, svc := range svcs {
-		err = d.ChaosSrv.Shutdown(svc.Name)
-		if err != nil {
+		if err = d.ChaosSrv.Shutdown(svc.Name); err != nil {
 			return err
 		}
 	}

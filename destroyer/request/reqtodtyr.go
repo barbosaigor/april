@@ -21,7 +21,8 @@ func ReqToDestroy(host string, svcs []april.Service, token string) error {
 		svcsBody[i].Name = svc.Name
 		svcsBody[i].Selector = svc.Selector
 	}
-	reqBody, err := json.Marshal(destroyer.ShutdownBodyJson{svcsBody})
+	body := destroyer.ShutdownBodyJson{svcsBody}
+	reqBody, err := json.Marshal(body)
 	if err != nil {
 		return err
 	}
