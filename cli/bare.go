@@ -9,7 +9,7 @@ import (
 
 func init() {
 	bareCmd.Flags().StringVarP(&filepath, "file", "f", "conf.yml", "Configuration file")
-	bareCmd.Flags().Uint32VarP(&number, "number", "n", 0, "Number of nodes to return")
+	bareCmd.Flags().Uint32VarP(&number, "number", "n", 0, "Maximum number of services to return")
 	bareCmd.MarkFlagRequired("number")
 	rootCmd.AddCommand(bareCmd)
 }
@@ -19,11 +19,11 @@ var bareCmd = &cobra.Command{
 	Short: "Bare execute only the internal picking algorithm",
 	Long:  "Bare execute only the internal picking algorithm",
 	Run: func(cmd *cobra.Command, args []string) {
-		nodes, err := april.PickRandDepsYml(filepath, number)
+		services, err := april.PickRandDepsYml(filepath, number)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(nodes)
+		fmt.Println(services)
 	},
 }

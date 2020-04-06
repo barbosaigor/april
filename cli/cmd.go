@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const VERSION = "0.1.0"
+const VERSION = "0.1.1"
 
 var filepath string
 var number uint32
@@ -20,7 +20,7 @@ var password string
 
 func init() {
 	rootCmd.Flags().StringVarP(&filepath, "file", "f", "conf.yml", "Configuration file")
-	rootCmd.Flags().Uint32VarP(&number, "number", "n", 0, "Number of nodes to return")
+	rootCmd.Flags().Uint32VarP(&number, "number", "n", 0, "Maximum number of services to return")
 	rootCmd.Flags().StringVarP(&host, "chaos", "c", "localhost:7071", "Chaos server url")
 	rootCmd.Flags().StringVarP(&username, "username", "u", "", "Username")
 	rootCmd.Flags().StringVarP(&password, "password", "s", "", "Password")
@@ -34,18 +34,18 @@ var rootCmd = &cobra.Command{
 	Short: "April is a chaos testing tool",
 	Long:  "A fast and flexible tool for chaos testing.",
 	Run: func(cmd *cobra.Command, args []string) {
-		nodes, err := april.PickRandDepsYml(filepath, number)
+		services, err := april.PickRandDepsYml(filepath, number)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		token := auth.EncryptUser(username, password)
-		err = request.ReqToDestroy(host, nodes, token)
+		err = request.ReqToDestroy(host, services, token)
 		if err != nil {
-			fmt.Println(err.Error())
+			fmt.Println(err)
 			return
 		}
-		fmt.Println("Nodes destroyed: ", nodes)
+		fmt.Println("Services destroyed: ", services)
 	},
 	Version: VERSION,
 }
