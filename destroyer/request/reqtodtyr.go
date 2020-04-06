@@ -6,17 +6,22 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-)
 
-type nodesResJson struct {
-	Nodes []string `json:"nodes"`
-}
+	"github.com/barbosaigor/april"
+	"github.com/barbosaigor/april/destroyer"
+)
 
 var ErrUnauthorized = errors.New("Invalid credentials")
 
-// ReqToDestroy requests the chaos server to shut down nodes
-func ReqToDestroy(host string, nodes []string, token string) error {
-	reqBody, err := json.Marshal(nodesResJson{nodes})
+// ReqToDestroy requests the chaos server to shut down services
+func ReqToDestroy(host string, svcs []april.Service, token string) error {
+	// Create http body request
+	svcsBody := make([]destroyer.ServiceBodyJson, len(svcs))
+	for i, svc := range svcs {
+		svcsBody[i].Name = svc.Name
+		svcsBody[i].Selector = svc.Selector
+	}
+	reqBody, err := json.Marshal(destroyer.ShutdownBodyJson{svcsBody})
 	if err != nil {
 		return err
 	}
@@ -37,7 +42,7 @@ func ReqToDestroy(host string, nodes []string, token string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 500 {
-		return errors.New("Fail to destroy nodes")
+		return errors.New("Fail to destroy services")
 	} else if resp.StatusCode == 401 {
 		return ErrUnauthorized
 	} else if resp.StatusCode > 401 {

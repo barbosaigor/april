@@ -12,6 +12,13 @@ const (
 	All
 )
 
+var Selector = map[string]int{
+	"prefix":  Prefix,
+	"infix":   Infix,
+	"postfix": Postfix,
+	"all":     All,
+}
+
 func generateExp(pattern string, notation int) string {
 	var exp string
 	switch notation {

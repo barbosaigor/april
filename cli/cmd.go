@@ -3,9 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"
-	"github.com/barbosaigor/april/destroyer/request"
+	"github.com/barbosaigor/april/internal/chaoshost"
 	"github.com/spf13/cobra"
 )
 
@@ -34,18 +33,14 @@ var rootCmd = &cobra.Command{
 	Short: "April is a chaos testing tool",
 	Long:  "A fast and flexible tool for chaos testing.",
 	Run: func(cmd *cobra.Command, args []string) {
-		services, err := april.PickRandDepsYml(filepath, number)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
 		token := auth.EncryptUser(username, password)
-		err = request.ReqToDestroy(host, services, token)
+		ch := chaoshost.ChaosHost{host, token}
+		svs, err := ch.PickAndShutdownInstancesFile(filepath, number)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println("Services destroyed: ", services)
+		fmt.Println("Services destroyed: ", svs)
 	},
 	Version: VERSION,
 }

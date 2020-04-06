@@ -94,7 +94,11 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nodes, err := april.PickRandDeps([]byte(c.Conf), uint32(n))
+	conf, err := april.ReadConf([]byte(c.Conf))
+	if err != nil {
+		return
+	}
+	nodes, err := april.PickRandDepsConf(conf, uint32(n))
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "Fail to pick nodes", http.StatusInternalServerError)
@@ -102,7 +106,12 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := auth.EncryptUser(c.Username, c.Password)
-	err = request.ReqToDestroy(destroyerHost, nodes, token)
+	svs := make([]april.Service, len(nodes))
+	for i, s := range nodes {
+		svs[i].Name = s
+		svs[i].Selector = conf.Services[s].Selector;
+	}
+	err = request.ReqToDestroy(destroyerHost, svs, token)
 	if err == request.ErrUnauthorized {
 		http.Error(w, "Invalid user", http.StatusForbidden)
 		return

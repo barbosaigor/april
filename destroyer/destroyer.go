@@ -7,12 +7,41 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"
+	"github.com/barbosaigor/april/selector"
 )
 
-type Destroyer interface {
-	// Destroy does shutdown nodes
-	Destroy(nodes []string) error
+type Destroyer struct {
+	ChaosSrv ChaosServer
+}
+
+// FilterSvcs selects all matched services from instances (using every service notation)
+func (d *Destroyer) FilterSvcs(instances []Instance, svcs []april.Service) (s []april.Service) {
+	for _, instance := range instances {
+		for _, svc := range svcs {
+			if selector.Match(instance.Name, svc.Name, selector.Selector[svc.Selector]) {
+				s = append(s, svc)
+			}
+		}
+	}
+	return
+}
+
+// Shutdown turns down services listed on svcs
+func (d *Destroyer) Shutdown(svcs []april.Service) error {
+	instances, err := d.ChaosSrv.ListInstances(Any)
+	if err != nil {
+		return err
+	}
+	svcs = d.FilterSvcs(instances, svcs)
+	for _, svc := range svcs {
+		err = d.ChaosSrv.Shutdown(svc.Name)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 type server struct {
@@ -22,16 +51,21 @@ type server struct {
 	serveMux *http.ServeMux
 }
 
-type nodesJson struct {
-	Nodes []string `json:"nodes"`
+type ServiceBodyJson struct {
+	Name     string `json:"name"`
+	Selector string `json:"selector"`
+}
+
+type ShutdownBodyJson struct {
+	Services []ServiceBodyJson `json:"services"`
 }
 
 type responseMessage struct {
 	Message string `json:"message"`
 }
 
-func New(port int, destyer Destroyer) *server {
-	return &server{auth.New(), port, destyer, nil}
+func New(port int, cs ChaosServer) *server {
+	return &server{auth.New(), port, Destroyer{cs}, nil}
 }
 
 // shutDownHandler shut down instances
@@ -51,8 +85,8 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 				return
 			}
 
-			var njson nodesJson
-			err = json.Unmarshal(data, &njson)
+			var sbjson ShutdownBodyJson
+			err = json.Unmarshal(data, &sbjson)
 			if err != nil {
 				resMsg := responseMessage{"Invalid request body. Should be a valid json"}
 				res, _ := json.Marshal(resMsg)
@@ -61,9 +95,15 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 				return
 			}
 
-			err = s.destyer.Destroy(njson.Nodes)
+			// Create services using services data from request
+			svcs := make([]april.Service, len(sbjson.Services))
+			for i, svc := range sbjson.Services {
+				svcs[i] = april.Service{svc.Name, svc.Selector}
+			}
+
+			err = s.destyer.Shutdown(svcs)
 			if err != nil {
-				resMsg := responseMessage{"One container had a problem"}
+				resMsg := responseMessage{"Internal Chaos Server error"}
 				res, _ := json.Marshal(resMsg)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write(res)
