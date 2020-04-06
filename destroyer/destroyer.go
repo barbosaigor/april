@@ -6,44 +6,54 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"errors"
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"
 	"github.com/barbosaigor/april/selector"
 )
 
+var ErrNotMatchingService = errors.New("Some service has no instance matching")
+
 type Destroyer struct {
 	ChaosSrv ChaosServer
 }
 
-// FilterSvcs selects all matched services from instances (using every service notation)
-func (d *Destroyer) FilterSvcs(instances []Instance, svcs []april.Service) (s []april.Service) {
+// getInstancesFromSvcs selects all matched services from instances (using every service notation)
+func (d *Destroyer) getInstancesFromSvcs(instances []Instance, svcs []april.Service) []string {
+	// Use map force unique key, even either multiple services matches
+	itcs := make(map[string]string, len(svcs))
 	for _, instance := range instances {
 		for _, svc := range svcs {
-			if instance.Name != svc.Name {
-				continue
-			}
+			// Set a default selector
 			sel, ok := selector.Selector[svc.Selector]
 			if !ok {
 				sel = selector.All
 			}
 			if selector.Match(instance.Name, svc.Name, sel) {
-				s = append(s, svc)
+				itcs[svc.Name] = instance.Name
 			}
 		}
 	}
-	return
+	var instcs []string
+	for _, name := range itcs {
+		instcs = append(instcs, name)
+	}
+	return instcs
 }
 
 // Shutdown turns down services listed on svcs
 func (d *Destroyer) Shutdown(svcs []april.Service) error {
-	instances, err := d.ChaosSrv.ListInstances(Any)
+	instances, err := d.ChaosSrv.ListInstances(Up)
 	if err != nil {
 		return err
 	}
-	svcs = d.FilterSvcs(instances, svcs)
-	for _, svc := range svcs {
-		if err = d.ChaosSrv.Shutdown(svc.Name); err != nil {
+	itcs := d.getInstancesFromSvcs(instances, svcs)
+	if len(svcs) > len(itcs) {
+		return ErrNotMatchingService
+	}
+	for _, instance := range itcs {
+		if err = d.ChaosSrv.Shutdown(instance); err != nil {
 			return err
 		}
 	}
@@ -66,7 +76,7 @@ type ShutdownBodyJson struct {
 	Services []ServiceBodyJson `json:"services"`
 }
 
-type responseMessage struct {
+type ResponseMessage struct {
 	Message string `json:"message"`
 }
 
@@ -84,7 +94,7 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 		case "POST":
 			data, err := ioutil.ReadAll(r.Body)
 			if err != nil {
-				resMsg := responseMessage{"Error to read request"}
+				resMsg := ResponseMessage{"Error to read request"}
 				res, _ := json.Marshal(resMsg)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write(res)
@@ -94,7 +104,7 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 			var sbjson ShutdownBodyJson
 			err = json.Unmarshal(data, &sbjson)
 			if err != nil {
-				resMsg := responseMessage{"Invalid request body. Should be a valid json"}
+				resMsg := ResponseMessage{"Invalid request body. Should be a valid json"}
 				res, _ := json.Marshal(resMsg)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write(res)
@@ -109,7 +119,7 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 
 			err = s.destyer.Shutdown(svcs)
 			if err != nil {
-				resMsg := responseMessage{"Internal Chaos Server error"}
+				resMsg := ResponseMessage{err.Error()}
 				res, _ := json.Marshal(resMsg)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write(res)
