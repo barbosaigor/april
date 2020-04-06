@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"io/ioutil"
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/destroyer"
@@ -41,9 +42,15 @@ func ReqToDestroy(host string, svcs []april.Service, token string) error {
 		return err
 	}
 	defer resp.Body.Close()
-
+	
 	if resp.StatusCode == 500 {
-		return errors.New("Fail to destroy services")
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return errors.New("Fail to destroy services or read response body")	
+		}
+		resMsg := destroyer.ResponseMessage{}
+		json.Unmarshal(body, &resMsg)
+		return errors.New(resMsg.Message)
 	} else if resp.StatusCode == 401 {
 		return ErrUnauthorized
 	} else if resp.StatusCode > 401 {
