@@ -2,18 +2,18 @@
 **April is under construction**  
 
 April proposes improve resilience in microservices architectures. It
-does chaos testing by randomly shutting down nodes, taking into account 
+does chaos testing by randomly shutting down services, taking into account 
 their importance.  
 April is a CLI tool, being possible to either run chaos testing or others tools,
 such as 'server' which hosts an API for remote access to the chaos test.
-The selection algorithm firstly picks K nodes, then it picks N dependencies on those nodes. Heavy nodes are more likely to be picked.  
+The selection algorithm firstly picks K services, then it picks N dependencies on those services. Heavy services are more likely to be picked.  
 It's important that Chaos Server is running to terminate instances.  
 
 ## Tools
 Chaos test. 
 Need a running 'chaos server' to terminate instances.  
 -f configuraion file path (Default is conf.yml)  
--n number of nodes to choose  
+-n maximum number of services to choose  
 -c chaos server endpoint (Default is localhost:7071)  
 -u username for chaos server auth  
 -s password for chaos server auth  
@@ -21,9 +21,9 @@ Need a running 'chaos server' to terminate instances.
 april -f conf.yml -n 10 -u bob -s mysecret
 ```  
 
-*Bare* runs only the selection algorithm, returning a set of nodes.  
+*Bare* runs only the selection algorithm, returning a set of services.  
 -f configuraion file path  
--n number of nodes to choose  
+-n maximum number of services to choose  
 ```bash 
 april bare -f conf.yml -n 10  
 ```  
