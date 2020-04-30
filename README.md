@@ -35,43 +35,66 @@ Need a running 'chaos server' to terminate instances.
 ```bash 
 april server -p 8080  // will listen on port 8080
 ``` 
-## Configuration file template
+## Configuration file
+*Fields*  
+_version_: could be ommited, default is 1   
+_services_: describes a list of services  
+_servicename_: is the name of a service that April is going to work  
+_weight_: represents the service importance for the April pick algorithm  
+_depedencies_: describe a list of services which the service depends  
+_select_: describe how chaos server must search for the service name. 
+E.g if you are using docker containers and a framework such as docker compose,
+compose will define the container name as a concatenation between your service name and a hash somewhere, in this case, it is better to look for the _infix_ corresponding to the service.  
 ```yaml
+# template
+version: 1
 services:
     servicename:
-        weight: Any integer
+        weight: [0-9]+ (any natural number)
         dependencies:
-            - list of services
+            - [a-zA-Z\_\-]* (dependency name)
+        selector: prefix|infix|postfix|all (how should match the service name instance)
 ```  
 
-### Configuration file example  
-> conf.yml
+*Example conf.yaml*  
 ```yaml
+version: 1
 services:
-    payment:
-        weight: 10
-        dependencies:
-            - "profile"
-            - "fees"
-    fees:
-        weight: 5
-    profile:
-        weight: 20
-    inventory:
-        weight: 15
-    shipping:
-        weight: 5
-        dependencies:
-            - "inventory"
-            - "profile"
-    storefront:
-        weight: 20
-        dependencies:
-            - "shipping"
-            - "inventory"
-            - "profile"
-            - "payment"
-            - "fees"
+  payment:
+    weight: 10
+    dependencies:
+      - profile
+      - fees
+    selector: postfix  
+
+  fees:
+    weight: 5
+    selector: infix  
+
+  profile:
+    weight: 20
+    selector: infix  
+
+  inventory:
+    weight: 15
+    selector: infix  
+
+  shipping:
+    weight: 5
+    dependencies:
+      - inventory
+      - profile
+    selector: infix  
+
+  storefront:
+    weight: 20
+    dependencies:
+      - shipping
+      - inventory
+      - profile
+      - payment
+      - fees
+    selector: infix
 ```
 
 ## Design approach 
@@ -87,4 +110,4 @@ implement the Destroyer interface, which contain the business logic for terminat
 
 ## Chaos Servers
 Docker chaos server stop containers [dockercs](https://github.com/barbosaigor/dockercs).  
-Kubenetes chaos server terminate pods [kubernetescs](https://github.com/barbosaigor/kubernetescs), in future it may terminate deployments and services.  
+(Under development) Kubenetes chaos server terminate pods [kubernetescs](https://github.com/barbosaigor/kubernetescs), in future it may terminate deployments and services.  
