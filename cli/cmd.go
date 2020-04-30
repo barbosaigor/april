@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VERSION describes current Aprils version
 const VERSION = "0.1.1"
 
 var filepath string
@@ -34,7 +35,7 @@ var rootCmd = &cobra.Command{
 	Long:  "A fast and flexible tool for chaos testing.",
 	Run: func(cmd *cobra.Command, args []string) {
 		token := auth.EncryptUser(username, password)
-		ch := chaoshost.ChaosHost{host, token}
+		ch := chaoshost.ChaosHost{Host: host, Token: token}
 		svs, err := ch.PickAndShutdownInstancesFile(filepath, number)
 		if err != nil {
 			fmt.Println(err)
@@ -45,6 +46,7 @@ var rootCmd = &cobra.Command{
 	Version: VERSION,
 }
 
+// Execute execute CLI operations
 func Execute() error {
 	return rootCmd.Execute()
 }

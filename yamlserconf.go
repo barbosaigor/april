@@ -10,6 +10,7 @@ type service map[string]struct {
 	Selector     string   `yaml:"selector"`
 }
 
+// ConfData stores the configuration data
 type ConfData struct {
 	Version  int32   `yaml:"version"`
 	Services service `yaml:"services"`

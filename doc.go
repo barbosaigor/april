@@ -1,4 +1,4 @@
-// Package April implements chaos test tool.
+// Package april implements chaos test tool.
 //
 //
 // April proposes improve resilience in microservices architectures. This

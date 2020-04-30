@@ -5,11 +5,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VERSION contain current version of chaos server
 const VERSION = "1.0.0"
 
 var username string
 var password string
 var port int
+
+// Cs used as stretegy design pattern, allowing easily switch chaos server implementations
 var Cs destroyer.ChaosServer
 
 func init() {
@@ -20,6 +23,7 @@ func init() {
 	RootCmd.MarkFlagRequired("password")
 }
 
+// RootCmd is an command structure used in CLI implementation
 var RootCmd = &cobra.Command{
 	Use:   "chaos",
 	Short: "Chaos server terminates instances via an API.",
@@ -32,6 +36,7 @@ var RootCmd = &cobra.Command{
 	Version: VERSION,
 }
 
+// Execute runs CLI operations
 func Execute() error {
 	return RootCmd.Execute()
 }

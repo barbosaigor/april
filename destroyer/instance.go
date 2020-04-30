@@ -1,5 +1,6 @@
 package destroyer
 
+// Status represents instance status
 type Status uint8
 
 // Status allowed values
@@ -10,6 +11,7 @@ const (
 	Any
 )
 
+// Instance holds the an instance data
 type Instance struct {
 	Name string
 	Sts  Status

@@ -6,6 +6,7 @@ import (
 	"github.com/barbosaigor/april/util"
 )
 
+// ChaosHost stores some server data and run chaos test operations
 type ChaosHost struct {
 	Host  string
 	Token string
@@ -19,6 +20,7 @@ func getConf(filePath string) (*april.ConfData, error) {
 	return april.ReadConf(fData)
 }
 
+// PickAndShutdownInstances selects a set of services and request to chaos server to shut down
 func (ch ChaosHost) PickAndShutdownInstances(conf *april.ConfData, n uint32) ([]string, error) {
 	services, err := april.PickRandDepsConf(conf, n)
 	if err != nil {
@@ -35,6 +37,7 @@ func (ch ChaosHost) PickAndShutdownInstances(conf *april.ConfData, n uint32) ([]
 	return services, nil
 }
 
+// PickAndShutdownInstancesFile as PickAndShutdownInstances does, but the it reads from a file the services data
 func (ch ChaosHost) PickAndShutdownInstancesFile(filePath string, n uint32) ([]string, error) {
 	conf, err := getConf(filePath)
 	if err != nil {

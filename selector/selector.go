@@ -5,19 +5,21 @@ import (
 	"regexp"
 )
 
-const (
-	Prefix = iota
-	Infix
-	Postfix
-	All
-)
-
+// Selector represents all possible match functions
 var Selector = map[string]int{
 	"prefix":  Prefix,
 	"infix":   Infix,
 	"postfix": Postfix,
 	"all":     All,
 }
+
+// Possible states for matching operations
+const (
+	Prefix = iota
+	Infix
+	Postfix
+	All
+)
 
 func generateExp(pattern string, notation int) string {
 	var exp string

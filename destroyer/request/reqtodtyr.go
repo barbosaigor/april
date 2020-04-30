@@ -9,20 +9,21 @@ import (
 	"net/http"
 
 	"github.com/barbosaigor/april"
-	"github.com/barbosaigor/april/destroyer"
+	"github.com/barbosaigor/april/internal/requestbody"
 )
 
+// ErrUnauthorized when there is an invalid credentials
 var ErrUnauthorized = errors.New("Invalid credentials")
 
 // ReqToDestroy requests the chaos server to shut down services
 func ReqToDestroy(host string, svcs []april.Service, token string) error {
 	// Create http body request
-	svcsBody := make([]destroyer.ServiceBodyJson, len(svcs))
+	svcsBody := make([]requestbody.ServiceBodyJSON, len(svcs))
 	for i, svc := range svcs {
 		svcsBody[i].Name = svc.Name
 		svcsBody[i].Selector = svc.Selector
 	}
-	body := destroyer.ShutdownBodyJson{svcsBody}
+	body := requestbody.ShutdownBodyJSON{Services: svcsBody}
 	reqBody, err := json.Marshal(body)
 	if err != nil {
 		return err
@@ -48,7 +49,7 @@ func ReqToDestroy(host string, svcs []april.Service, token string) error {
 		if err != nil {
 			return errors.New("Fail to destroy services or read response body")
 		}
-		resMsg := destroyer.ResponseMessage{}
+		resMsg := requestbody.ResponseMessage{}
 		json.Unmarshal(body, &resMsg)
 		return errors.New(resMsg.Message)
 	} else if resp.StatusCode == 401 {

@@ -10,11 +10,14 @@ import (
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"
+	"github.com/barbosaigor/april/internal/requestbody"
 	"github.com/barbosaigor/april/selector"
 )
 
+// ErrNotMatchingService indicates that some service has no instance matching
 var ErrNotMatchingService = errors.New("Some service has no instance matching")
 
+// Destroyer implements chaos server operations
 type Destroyer struct {
 	ChaosSrv ChaosServer
 }
@@ -60,51 +63,40 @@ func (d *Destroyer) Shutdown(svcs []april.Service) error {
 	return nil
 }
 
-type server struct {
+// Server implements chaos server API
+type Server struct {
 	Cred     *auth.Credentials
 	port     int
 	destyer  Destroyer
 	serveMux *http.ServeMux
 }
 
-type ServiceBodyJson struct {
-	Name     string `json:"name"`
-	Selector string `json:"selector"`
-}
-
-type ShutdownBodyJson struct {
-	Services []ServiceBodyJson `json:"services"`
-}
-
-type ResponseMessage struct {
-	Message string `json:"message"`
-}
-
-func New(port int, cs ChaosServer) *server {
-	return &server{auth.New(), port, Destroyer{cs}, nil}
+// New creates a chaos server instance
+func New(port int, cs ChaosServer) *Server {
+	return &Server{auth.New(), port, Destroyer{cs}, nil}
 }
 
 // shutDownHandler shut down instances
 // body:
 //		nodes: nodes to shut down
-func (s *server) shutDownHandler() http.HandlerFunc {
+func (s *Server) shutDownHandler() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case "POST":
 			data, err := ioutil.ReadAll(r.Body)
 			if err != nil {
-				resMsg := ResponseMessage{"Error to read request"}
+				resMsg := requestbody.ResponseMessage{Message: "Error to read request"}
 				res, _ := json.Marshal(resMsg)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write(res)
 				return
 			}
 
-			var sbjson ShutdownBodyJson
+			var sbjson requestbody.ShutdownBodyJSON
 			err = json.Unmarshal(data, &sbjson)
 			if err != nil {
-				resMsg := ResponseMessage{"Invalid request body. Should be a valid json"}
+				resMsg := requestbody.ResponseMessage{Message: "Invalid request body. Should be a valid json"}
 				res, _ := json.Marshal(resMsg)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write(res)
@@ -114,12 +106,12 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 			// Create services using services data from request
 			svcs := make([]april.Service, len(sbjson.Services))
 			for i, svc := range sbjson.Services {
-				svcs[i] = april.Service{svc.Name, svc.Selector}
+				svcs[i] = april.Service{Name: svc.Name, Selector: svc.Selector}
 			}
 
 			err = s.destyer.Shutdown(svcs)
 			if err != nil {
-				resMsg := ResponseMessage{err.Error()}
+				resMsg := requestbody.ResponseMessage{Message: err.Error()}
 				res, _ := json.Marshal(resMsg)
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write(res)
@@ -133,7 +125,8 @@ func (s *server) shutDownHandler() http.HandlerFunc {
 }
 
 // Serve hosts aprils API over HTTP protocol
-func (s *server) Serve() {
+func (s *Server) Serve() {
+	s.destyer.ChaosSrv.OnStart()
 	s.serveMux = http.NewServeMux()
 	s.serveMux.Handle("/shutdown", s.Cred.MwAuth(s.shutDownHandler()))
 	fmt.Println("(HTTP) Listening on port: ", s.port)
