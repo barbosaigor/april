@@ -16,7 +16,7 @@ func (c *Credentials) MwAuth(next http.Handler) http.Handler {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		if !c.isAuthorised(ck.Value) {
+		if !c.IsAuthorised(ck.Value) {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
