@@ -109,7 +109,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	svs := make([]april.Service, len(services))
 	for i, s := range services {
 		svs[i].Name = s
-		svs[i].Selector = conf.Services[s].Selector;
+		svs[i].Selector = conf.Services[s].Selector
 	}
 	err = request.ReqToDestroy(destroyerHost, svs, token)
 	if err == request.ErrUnauthorized {

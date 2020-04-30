@@ -2,11 +2,11 @@ package destroyer
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"errors"
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"

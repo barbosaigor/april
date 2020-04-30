@@ -2,12 +2,12 @@ package chaoshost
 
 import (
 	"github.com/barbosaigor/april"
-	"github.com/barbosaigor/april/util"
 	"github.com/barbosaigor/april/destroyer/request"
+	"github.com/barbosaigor/april/util"
 )
 
 type ChaosHost struct {
-	Host string
+	Host  string
 	Token string
 }
 
@@ -27,7 +27,7 @@ func (ch ChaosHost) PickAndShutdownInstances(conf *april.ConfData, n uint32) ([]
 	svs := make([]april.Service, len(services))
 	for i, svcName := range services {
 		svs[i].Name = svcName
-		svs[i].Selector = conf.Services[svcName].Selector;
+		svs[i].Selector = conf.Services[svcName].Selector
 	}
 	if err = request.ReqToDestroy(ch.Host, svs, ch.Token); err != nil {
 		return nil, err
