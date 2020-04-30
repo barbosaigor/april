@@ -4,7 +4,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type service map[string]struct {
+// ConfService stores service data
+type ConfService map[string]struct {
 	Weight       uint32   `yaml:"weight"`
 	Dependencies []string `yaml:"dependencies"`
 	Selector     string   `yaml:"selector"`
@@ -12,8 +13,8 @@ type service map[string]struct {
 
 // ConfData stores the configuration data
 type ConfData struct {
-	Version  int32   `yaml:"version"`
-	Services service `yaml:"services"`
+	Version  int32       `yaml:"version"`
+	Services ConfService `yaml:"services"`
 }
 
 // ReadConf reads bytes and convert to an service
