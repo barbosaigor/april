@@ -2,10 +2,16 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5doyWs3UAsr3K4I6qtAmlQcZDesFNEHPZAzj8=
 github.com/barbosaigor/graphdeppicker v0.0.0-20200203175215-f8c0c4fb9f99 h1:OuXfugFTjdNieFbShjnBgsnrjcnSwWxMSlFBrgegA8A=
 github.com/barbosaigor/graphdeppicker v0.0.0-20200203175215-f8c0c4fb9f99/go.mod h1:5nLSpGlkf5xt+Z70PBF7Wk+aZgPNfR8bvPmCxjEePmY=
+github.com/barbosaigor/graphdeppicker v0.0.0-20200502195504-eabf23caca38 h1:O1Hx5k1/HqVDyquRVXCZDOOKTOmvmCi9W3jhOVU6ASg=
+github.com/barbosaigor/graphdeppicker v0.0.0-20200502195504-eabf23caca38/go.mod h1:N0oHI6AUKVOs/Q5PdR+oCH4h7le71K/gVwkPFLRwiSM=
 github.com/barbosaigor/graphll v0.0.0-20191219112449-78d1fce03dd1 h1:tqGbczx8f3AaYUvHKkZcqJLnPgQBiR6HEnuKjshdz5c=
 github.com/barbosaigor/graphll v0.0.0-20191219112449-78d1fce03dd1/go.mod h1:3xC0PSMTMFF8EOlCHbYLhTZsx9EBgK1QiHfzDFFFCMA=
+github.com/barbosaigor/graphll v0.0.0-20200502185154-98c1b5da31ee h1:XQLrHpkHLcqYPOeCfaFqfLndM+yt1aN01xin64XLfMc=
+github.com/barbosaigor/graphll v0.0.0-20200502185154-98c1b5da31ee/go.mod h1:3xC0PSMTMFF8EOlCHbYLhTZsx9EBgK1QiHfzDFFFCMA=
 github.com/barbosaigor/picker v0.0.0-20200103110418-bfb68aa0d9e0 h1:rRuiaruJDhnd+ABOB9gRsZ7jp3DZh5GJvoy9MRx5tN8=
 github.com/barbosaigor/picker v0.0.0-20200103110418-bfb68aa0d9e0/go.mod h1:lQIga6QhyNJbPpDze9O7r512BGqYZzoKmn5DSm3TifY=
+github.com/barbosaigor/picker v0.0.0-20200502192917-eef69d18a96d h1:bYoGD0gH/XH8sOUoMj9NiKfgyLGRAdOYICDk4wl2qWY=
+github.com/barbosaigor/picker v0.0.0-20200502192917-eef69d18a96d/go.mod h1:lQIga6QhyNJbPpDze9O7r512BGqYZzoKmn5DSm3TifY=
 github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/go-etcd v2.0.0+incompatible/go.mod h1:Jez6KQU2B/sWsbdaef3ED8NzMklzPG4d5KIOhIy30Tk=
 github.com/coreos/go-semver v0.2.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
