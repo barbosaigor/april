@@ -12,7 +12,7 @@ func PickRandDepsConf(conf *ConfData, quantity uint32) ([]string, error) {
 	for sname, sdata := range conf.Services {
 		depGraph.Add(sname, sdata.Weight, sdata.Dependencies)
 	}
-	return graphdeppicker.Run(depGraph, quantity)
+	return graphdeppicker.Pick(depGraph, quantity)
 }
 
 // PickRandDeps picks random nodes described in a yaml file as a slice of byte
