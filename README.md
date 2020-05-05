@@ -42,7 +42,7 @@ _services_: describes a list of services
 _servicename_: is the name of a service that April is going to work  
 _weight_: represents the service importance for the April pick algorithm  
 _depedencies_: describe a list of services which the service depends  
-_select_: describe how chaos server must search for the service name. 
+_selector_: describe how chaos server must search for the service name. 
 E.g if you are using docker containers and a framework such as docker compose,
 compose will define the container name as a concatenation between your service name and a hash somewhere, in this case, it is better to look for the _infix_ corresponding to the service.  
 ```yaml
