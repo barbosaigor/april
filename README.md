@@ -9,6 +9,11 @@ such as 'server' which hosts an API for remote access to the chaos test.
 The selection algorithm firstly picks K services, then it picks N dependencies on those services. Heavy services are more likely to be picked.  
 It's important that Chaos Server is running to terminate instances.  
 
+## Installation  
+```bash 
+go get -u github.com/barbosaigor/april/...
+```   
+
 ## Tools
 Chaos test. 
 Need a running 'chaos server' to terminate instances.  
