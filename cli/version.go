@@ -15,6 +15,6 @@ var versionCmd = &cobra.Command{
 	Short: "April's version",
 	Long:  "April is in alpha version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("April %v - Alpha\n", VERSION)
+		fmt.Printf("April %v\n", VERSION)
 	},
 }
