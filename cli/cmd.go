@@ -9,7 +9,7 @@ import (
 )
 
 // VERSION describes current Aprils version
-const VERSION = "0.1.1"
+const VERSION = "0.8.0"
 
 var filepath string
 var number uint32
@@ -41,7 +41,7 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
-		fmt.Println("Services destroyed: ", svs)
+		fmt.Println("Selected Services: ", svs)
 	},
 	Version: VERSION,
 }

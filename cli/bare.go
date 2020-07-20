@@ -24,6 +24,6 @@ var bareCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(services)
+		fmt.Println("Selected Services: ", services)
 	},
 }
