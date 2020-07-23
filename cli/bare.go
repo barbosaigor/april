@@ -19,7 +19,7 @@ var bareCmd = &cobra.Command{
 	Short: "Bare execute only the internal picking algorithm",
 	Long:  "Bare execute only the internal picking algorithm",
 	Run: func(cmd *cobra.Command, args []string) {
-		services, err := april.PickRandDepsYml(filepath, number)
+		services, err := april.PickFromYaml(filepath, number)
 		if err != nil {
 			fmt.Println(err)
 			return

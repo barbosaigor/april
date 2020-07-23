@@ -55,7 +55,7 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	svs, err := april.PickRandDeps([]byte(c.Conf), uint32(n))
+	svs, err := april.Pick([]byte(c.Conf), uint32(n))
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "Fail to pick services", http.StatusInternalServerError)
@@ -98,7 +98,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	services, err := april.PickRandDepsConf(conf, uint32(n))
+	services, err := april.PickFromConf(conf, uint32(n))
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "Fail to pick services", http.StatusInternalServerError)

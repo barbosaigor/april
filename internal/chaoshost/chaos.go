@@ -22,7 +22,7 @@ func getConf(filePath string) (*april.ConfData, error) {
 
 // PickAndShutdownInstances selects a set of services and request to chaos server to shut down
 func (ch ChaosHost) PickAndShutdownInstances(conf *april.ConfData, n uint32) ([]string, error) {
-	services, err := april.PickRandDepsConf(conf, n)
+	services, err := april.PickFromConf(conf, n)
 	if err != nil {
 		return nil, err
 	}

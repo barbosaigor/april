@@ -6,7 +6,7 @@ import (
 )
 
 func TestPickRandDepsYml(t *testing.T) {
-	nodes, err := PickRandDepsYml("cmd/examples/conf.yml", 4)
+	nodes, err := PickFromYaml("cmd/examples/conf.yml", 4)
 	if err != nil {
 		t.Errorf("PickRandDepsYml returned an error: %v", err)
 	}
