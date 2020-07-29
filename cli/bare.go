@@ -1,9 +1,8 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/barbosaigor/april"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -21,9 +20,9 @@ var bareCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		services, err := april.PickFromYaml(filepath, number)
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 			return
 		}
-		fmt.Println("Selected Services: ", services)
+		log.Info("Selected Services: ", services)
 	},
 }

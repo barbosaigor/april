@@ -5,8 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"
@@ -14,8 +15,8 @@ import (
 	"github.com/barbosaigor/april/selector"
 )
 
-// ErrNotMatchingService indicates that some service has no instance matching
-var ErrNotMatchingService = errors.New("Some service has no instance matching")
+// ErrNotMatchingService indicates that some selected service has no instance matching on Chaos Server
+var ErrNotMatchingService = errors.New("Some selected service has no instance matching on Chaos Server")
 
 // Destroyer implements chaos server operations
 type Destroyer struct {
@@ -130,6 +131,6 @@ func (s *Server) Serve() {
 	s.cs.ChaosSrv.OnStart()
 	s.serveMux = http.NewServeMux()
 	s.serveMux.Handle("/shutdown", s.Cred.MwAuth(s.shutDownHandler()))
-	fmt.Println("(HTTP) Listening on port: ", s.port)
+	log.Infof("(HTTP) Listening on port: %v", s.port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", s.port), s.serveMux))
 }

@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"
@@ -44,7 +45,7 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		http.Error(w, "Fail to read request body", http.StatusInternalServerError)
 		return
 	}
@@ -58,7 +59,7 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 
 	svs, err := april.Pick([]byte(c.Conf), uint32(n))
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		http.Error(w, "Fail to pick services", http.StatusInternalServerError)
 		return
 	}
@@ -101,7 +102,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	services, err := april.PickFromConf(conf, uint32(n))
 	if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		http.Error(w, "Fail to pick services", http.StatusInternalServerError)
 		return
 	}
@@ -117,7 +118,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid user", http.StatusForbidden)
 		return
 	} else if err != nil {
-		log.Println(err.Error())
+		log.Error(err)
 		http.Error(w, "There was a problem with chaos server", http.StatusInternalServerError)
 		return
 	}

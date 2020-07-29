@@ -1,6 +1,8 @@
 package chaoshost
 
 import (
+	"fmt"
+
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/chaosserver/request"
 	"github.com/barbosaigor/april/util"
@@ -24,7 +26,7 @@ func getConf(filePath string) (*april.ConfData, error) {
 func (ch ChaosHost) PickAndShutdownInstances(conf *april.ConfData, n uint32) ([]string, error) {
 	services, err := april.PickFromConf(conf, n)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Selected Services %v: %w", services, err)
 	}
 	svs := make([]april.Service, len(services))
 	for i, svcName := range services {
@@ -32,7 +34,7 @@ func (ch ChaosHost) PickAndShutdownInstances(conf *april.ConfData, n uint32) ([]
 		svs[i].Selector = conf.Services[svcName].Selector
 	}
 	if err = request.ReqToDestroy(ch.Host, svs, ch.Token); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Selected Services %v: %w", services, err)
 	}
 	return services, nil
 }

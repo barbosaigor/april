@@ -1,13 +1,12 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/barbosaigor/april/cli"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	if err := cli.Execute(); err != nil {
-		fmt.Printf("Error: %v\n", err)
+		log.Fatal("Error: %v\n", err)
 	}
 }

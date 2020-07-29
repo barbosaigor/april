@@ -1,8 +1,7 @@
 package cli
 
 import (
-	"fmt"
-
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +14,6 @@ var versionCmd = &cobra.Command{
 	Short: "April's version",
 	Long:  "April is in alpha version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("April %v\n", VERSION)
+		log.Info("April %v\n", VERSION)
 	},
 }

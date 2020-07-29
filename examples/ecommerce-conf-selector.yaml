@@ -4,26 +4,23 @@ services:
     dependencies:
       - profile
       - fees
-    selector: infix
 
   fees:
     weight: 5
-    selector: infix
+    selector: postfix
 
   profile:
     weight: 20
-    selector: infix
 
   inventory:
     weight: 15
-    selector: infix
+    selector: prefix
 
   shipping:
     weight: 5
     dependencies:
       - inventory
       - profile
-    selector: infix
 
   storefront:
     weight: 20
@@ -33,4 +30,4 @@ services:
       - profile
       - payment
       - fees
-    selector: infix
+

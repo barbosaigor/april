@@ -1,10 +1,9 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/barbosaigor/april/auth"
 	"github.com/barbosaigor/april/internal/chaoshost"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -38,10 +37,10 @@ var rootCmd = &cobra.Command{
 		ch := chaoshost.ChaosHost{Host: host, Token: token}
 		svs, err := ch.PickAndShutdownInstancesFile(filepath, number)
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 			return
 		}
-		fmt.Println("Selected Services: ", svs)
+		log.Info("Selected Services: ", svs)
 	},
 	Version: VERSION,
 }

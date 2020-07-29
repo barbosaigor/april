@@ -1,9 +1,8 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/barbosaigor/april/server"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +19,7 @@ var serverCmd = &cobra.Command{
 	Short: "April's Create a Server for API access",
 	Long:  "April's Create a API Server. Listening on port 7111",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("(HTTP) Listening on port: ", port)
+		log.Info("(HTTP) Listening on port: ", port)
 		if dstrHost != "" {
 			server.SetChaosServerHost(dstrHost)
 		}
