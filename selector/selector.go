@@ -10,21 +10,21 @@ var Selector = map[string]int{
 	"prefix":  Prefix,
 	"infix":   Infix,
 	"postfix": Postfix,
-	"all":     All,
+	"all":     Exact,
 }
 
 // Possible states for matching operations
 const (
-	Prefix = iota
+	Prefix = iota + 10
 	Infix
 	Postfix
-	All
+	Exact
 )
 
 func generateExp(pattern string, notation int) string {
 	var exp string
 	switch notation {
-	case All:
+	case Exact:
 		exp = `^%s$`
 	case Prefix:
 		exp = `^%s`
@@ -44,7 +44,7 @@ func createRegex(pattern string, notation int) *regexp.Regexp {
 // if the pattern was found it'll return true, elsewere return false.
 // If it's invalid notation then panic.
 func Match(txt, pattern string, notation int) bool {
-	if notation != Prefix && notation != Infix && notation != Postfix && notation != All {
+	if notation != Prefix && notation != Infix && notation != Postfix && notation != Exact {
 		panic("Invalid notation")
 	}
 	regexpr := createRegex(pattern, notation)

@@ -61,14 +61,14 @@ func TestPostfixMatch(t *testing.T) {
 	}
 }
 
-func TestAllMatch(t *testing.T) {
-	if !Match(exp, exp, All) {
+func TestExactMatch(t *testing.T) {
+	if !Match(exp, exp, Exact) {
 		t.Errorf("Error: All match not matched: %s", exp)
 	} else {
 		t.Log("Matched with sucess")
 	}
 	txt := `ld}\`
-	if Match(exp, txt, All) {
+	if Match(exp, txt, Exact) {
 		t.Errorf("Error: All match not matched: %s", txt)
 	} else {
 		t.Log("Matched with sucess")
