@@ -22,7 +22,7 @@ var serverCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("(HTTP) Listening on port: ", port)
 		if dstrHost != "" {
-			server.SetDestroyerHost(dstrHost)
+			server.SetChaosServerHost(dstrHost)
 		}
 		server.Serve(port)
 	},

@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/barbosaigor/april/destroyer"
+	cs "github.com/barbosaigor/april/chaosserver"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +13,7 @@ var password string
 var port int
 
 // Cs used as stretegy design pattern, allowing easily switch chaos server implementations
-var Cs destroyer.ChaosServer
+var Cs cs.ChaosServer
 
 func init() {
 	RootCmd.Flags().StringVarP(&username, "username", "u", "", "Username")
@@ -29,7 +29,7 @@ var RootCmd = &cobra.Command{
 	Short: "Chaos server terminates instances via an API.",
 	Long:  "Chaos server terminates instances via an API.",
 	Run: func(cmd *cobra.Command, args []string) {
-		serv := destroyer.New(port, Cs)
+		serv := cs.New(port, Cs)
 		serv.Cred.Register(username, password)
 		serv.Serve()
 	},

@@ -2,7 +2,7 @@ package chaoshost
 
 import (
 	"github.com/barbosaigor/april"
-	"github.com/barbosaigor/april/destroyer/request"
+	"github.com/barbosaigor/april/chaosserver/request"
 	"github.com/barbosaigor/april/util"
 )
 

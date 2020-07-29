@@ -10,23 +10,24 @@ import (
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"
-	"github.com/barbosaigor/april/destroyer/request"
+	"github.com/barbosaigor/april/chaosserver/request"
 )
 
-var destroyerHost = "localhost:7071"
+var chaosServerHost = "localhost:7071"
 
-type confResJson struct {
+type confResJSON struct {
 	Conf     string `json:"conf"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-type resJson struct {
+type resJSON struct {
 	Services []string `json:"services"`
 }
 
-func SetDestroyerHost(h string) {
-	destroyerHost = h
+// SetChaosServerHost defines the chaos server enpoint
+func SetChaosServerHost(h string) {
+	chaosServerHost = h
 }
 
 // bareHandler executes only the service selecting algorithm
@@ -48,7 +49,7 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var c confResJson
+	var c confResJSON
 	json.Unmarshal(data, &c)
 	if c.Conf == "" {
 		http.Error(w, "Empty conf file", http.StatusInternalServerError)
@@ -62,7 +63,7 @@ func bareHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nRes, _ := json.Marshal(resJson{svs})
+	nRes, _ := json.Marshal(resJSON{svs})
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(nRes)
 }
@@ -87,10 +88,10 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var c confResJson
+	var c confResJSON
 	json.Unmarshal(data, &c)
 	if c.Conf == "" {
-		http.Error(w, "Empty conf or destroyerHost", http.StatusInternalServerError)
+		http.Error(w, "Empty conf or chaosServerHost", http.StatusInternalServerError)
 		return
 	}
 
@@ -111,7 +112,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		svs[i].Name = s
 		svs[i].Selector = conf.Services[s].Selector
 	}
-	err = request.ReqToDestroy(destroyerHost, svs, token)
+	err = request.ReqToDestroy(chaosServerHost, svs, token)
 	if err == request.ErrUnauthorized {
 		http.Error(w, "Invalid user", http.StatusForbidden)
 		return
@@ -120,7 +121,7 @@ func chaosHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "There was a problem with chaos server", http.StatusInternalServerError)
 		return
 	}
-	nRes, _ := json.Marshal(resJson{services})
+	nRes, _ := json.Marshal(resJSON{services})
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(nRes)
 }

@@ -1,4 +1,4 @@
-package destroyer
+package chaosserver
 
 // LifeCycle contains routines that execute in the chaos server lifecycle
 type LifeCycle interface {

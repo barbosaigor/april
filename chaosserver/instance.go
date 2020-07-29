@@ -1,4 +1,4 @@
-package destroyer
+package chaosserver
 
 // Status represents instance status
 type Status uint8

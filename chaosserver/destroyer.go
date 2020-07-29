@@ -1,4 +1,4 @@
-package destroyer
+package chaosserver
 
 import (
 	"encoding/json"
@@ -22,16 +22,17 @@ type Destroyer struct {
 	ChaosSrv ChaosServer
 }
 
-// getInstancesFromSvcs selects all matched services from instances (using every service notation)
+// getInstancesFromSvcs selects all matched services from instances (using every service notation).
+// if a service doesn't defines a selector, then Infinx will be used.
 func (d *Destroyer) getInstancesFromSvcs(instances []Instance, svcs []april.Service) []string {
 	// Use map force unique key, even either multiple services matches
 	itcs := make(map[string]string, len(svcs))
 	for _, instance := range instances {
 		for _, svc := range svcs {
-			// Set a default selector
+			// Set Infix as default selector
 			sel, ok := selector.Selector[svc.Selector]
 			if !ok {
-				sel = selector.All
+				sel = selector.Infix
 			}
 			if selector.Match(instance.Name, svc.Name, sel) {
 				itcs[svc.Name] = instance.Name
@@ -67,7 +68,7 @@ func (d *Destroyer) Shutdown(svcs []april.Service) error {
 type Server struct {
 	Cred     *auth.Credentials
 	port     int
-	destyer  Destroyer
+	cs       Destroyer
 	serveMux *http.ServeMux
 }
 
@@ -109,7 +110,7 @@ func (s *Server) shutDownHandler() http.HandlerFunc {
 				svcs[i] = april.Service{Name: svc.Name, Selector: svc.Selector}
 			}
 
-			err = s.destyer.Shutdown(svcs)
+			err = s.cs.Shutdown(svcs)
 			if err != nil {
 				resMsg := requestbody.ResponseMessage{Message: err.Error()}
 				res, _ := json.Marshal(resMsg)
@@ -126,7 +127,7 @@ func (s *Server) shutDownHandler() http.HandlerFunc {
 
 // Serve hosts aprils API over HTTP protocol
 func (s *Server) Serve() {
-	s.destyer.ChaosSrv.OnStart()
+	s.cs.ChaosSrv.OnStart()
 	s.serveMux = http.NewServeMux()
 	s.serveMux.Handle("/shutdown", s.Cred.MwAuth(s.shutDownHandler()))
 	fmt.Println("(HTTP) Listening on port: ", s.port)
