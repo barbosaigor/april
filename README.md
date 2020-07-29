@@ -29,8 +29,8 @@ Therefore, we gain flexibility about technologies that manage instances. A Chaos
 ## What is a Chaos Server ?
 Chaos server hosts an API which terminates instances. It is used by April, 
 which runs its algorithm and asks the Chaos Server to finish any selected instances. 
-All Chaos Servers implementations must implement the interface defined in april/destroyer package, so CSs must include that package and
-implement the Destroyer interface, where the business logic to terminate instances should be defined.  
+All Chaos Servers implementations must implement the interface defined in april/chaosserver package, so CSs must include that package and
+implement the ChaosServer interface, where the business logic to terminate instances should be defined.  
 
 ## Chaos Servers
 Docker chaos server stop containers [dockercs](https://github.com/barbosaigor/dockercs).  
@@ -69,7 +69,7 @@ _services_: describes a list of services
 _servicename_: is the name of a service that April is going to work  
 _weight_: represents the service importance for the April pick algorithm  
 _depedencies_: describe a list of services which the service depends  
-_selector_: describe how Chaos Server must search for the service name. 
+_selector_: describe how Chaos Server must search for the service name, default is Infix.  
 E.g If you are using Docker containers and a framework such as Docker Compose,
 Compose will define the container name as a concatenation between your service name and a hash somewhere, in this case, it is better to look for the _infix_ corresponding to the service.  
 
@@ -81,10 +81,10 @@ services:
         weight: [0-9]+ (any natural number)
         dependencies:
             - [a-zA-Z\_\-]* (dependency name)
-        selector: prefix|infix|postfix|all (how should match the service name instance)
+        selector: prefix|infix|postfix|exact (how should match the service name instance)
 ```  
 
-*Example conf.yaml*  
+*Example: ecommerce-conf.yaml*  
 ```yaml
 version: 1
 services:
@@ -97,22 +97,19 @@ services:
 
   fees:
     weight: 5
-    selector: infix  
 
   profile:
     weight: 20
-    selector: infix  
 
   inventory:
     weight: 15
-    selector: infix  
+    selector: exact  
 
   shipping:
     weight: 5
     dependencies:
       - inventory
       - profile
-    selector: infix  
 
   storefront:
     weight: 20
@@ -122,5 +119,9 @@ services:
       - profile
       - payment
       - fees
-    selector: infix
+```
+```bash
+# bare will just execute the algorithm, without calling CS
+$ april bare -n 3 -f ecommerce-conf.yaml
+> Selected Services:  [profile fees payment]
 ```
