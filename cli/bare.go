@@ -2,7 +2,7 @@ package cli
 
 import (
 	"github.com/barbosaigor/april"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -20,9 +20,9 @@ var bareCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		services, err := april.PickFromYaml(filepath, number)
 		if err != nil {
-			log.Error(err)
+			logrus.Error(err)
 			return
 		}
-		log.Info("Selected Services: ", services)
+		logrus.Infof("Selected Services: %v", services)
 	},
 }

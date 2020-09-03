@@ -3,7 +3,7 @@ package cli
 import (
 	"github.com/barbosaigor/april/auth"
 	"github.com/barbosaigor/april/internal/chaoshost"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -37,10 +37,10 @@ var rootCmd = &cobra.Command{
 		ch := chaoshost.ChaosHost{Host: host, Token: token}
 		svs, err := ch.PickAndShutdownInstancesFile(filepath, number)
 		if err != nil {
-			log.Error(err)
+			logrus.Error(err)
 			return
 		}
-		log.Info("Selected Services: ", svs)
+		logrus.Infof("Selected Services: %v", svs)
 	},
 	Version: VERSION,
 }

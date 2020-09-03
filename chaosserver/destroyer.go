@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/barbosaigor/april"
 	"github.com/barbosaigor/april/auth"
@@ -131,6 +131,5 @@ func (s *Server) Serve() {
 	s.cs.ChaosSrv.OnStart()
 	s.serveMux = http.NewServeMux()
 	s.serveMux.Handle("/shutdown", s.Cred.MwAuth(s.shutDownHandler()))
-	log.Infof("(HTTP) Listening on port: %v", s.port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", s.port), s.serveMux))
+	logrus.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", s.port), s.serveMux))
 }
