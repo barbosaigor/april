@@ -28,7 +28,7 @@ go get -u github.com/barbosaigor/april/...
 April's design is split into two parts: April CLI and Chaos Server (CS). April CLI runs the algorithm and requests to Chaos Server to terminate instances. 
 Therefore, we gain flexibility about technologies that manage instances. A Chaos server could terminate Docker containers, Kubernetes instances, and so on.  
 
-![Aprils design](./res/aprils-diagram-1.png)  
+![Aprils design](./res/april-diagram.png)  
 *(Architecture) Eg. A Chaos Server implementation using any technology, such as containerization or orchestration*
 
 ## What is a Chaos Server ?
