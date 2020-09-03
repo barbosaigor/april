@@ -29,7 +29,7 @@ April's design is split into two parts: April CLI and Chaos Server (CS). April C
 Therefore, we gain flexibility about technologies that manage instances. A Chaos server could terminate Docker containers, Kubernetes instances, and so on.  
 
 ![Aprils design](./res/aprils-diagram-1.png)  
-*(Architecture) Eg. A Chaos Server implementation using a containerization technology, such as Docker*
+*(Architecture) Eg. A Chaos Server implementation using any technology, such as containerization or orchestration*
 
 ## What is a Chaos Server ?
 Chaos server hosts an API which terminates instances. It is used by April, 
