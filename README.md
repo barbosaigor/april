@@ -1,4 +1,9 @@
-# April
+<p align="center">
+  <img src="res/april-logo.png" alt="April Logo" width="450"></a>
+  <br>
+  <i>Chaos Testing tool</i>
+  <br>
+</p>
 
 April proposes to improve resilience in microservices architectures. It
 does chaos testing by randomly shutting down services, taking into account their importance.  
